@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { BottomNav, BottomNavItem, Tooltip, DarkMode, Progressbar } from 'flowbite-svelte';
-	import { BookmarkSolid, AngleLeftOutline, AngleRightOutline } from 'flowbite-svelte-icons';
+	import { BottomNav, BottomNavItem, Tooltip, DarkMode, Progressbar, Modal, Button } from 'flowbite-svelte';
+	import { AngleLeftOutline, AngleRightOutline, QuestionCircleSolid } from 'flowbite-svelte-icons';
 	import { currentPage } from '$lib/stores/currentPage';
 	import { examStarted } from '$lib/stores/examStarted';
 	import '../app.pcss';
+	import { getCurrentDateTime } from '$lib/utils/currentDateTime';
 
 	let current: number = 1;
 	let total: number = 40;
-	let startTime: string = '2024-05-01 07:00:00';
+	let startTime: string = getCurrentDateTime();
 	let remainingTime: string = calculateRemainingTime(startTime, 3);
+	let defaultModal: boolean = false;
 
 	function calculateRemainingTime(startTime: string, duration: number): string {
 		const start = new Date(startTime);
@@ -75,8 +77,8 @@
 	classInner="grid-cols-4"
 	classOuter="dark:bg-slate-800"
 >
-	<BottomNavItem btnName="Bookmark">
-		<BookmarkSolid
+	<BottomNavItem btnName="Bookmark" on:click={() => (defaultModal = true)}>
+		<QuestionCircleSolid
 			class="mb-1 h-6 w-6 text-gray-500 group-hover:text-primary-600 dark:text-gray-400 dark:group-hover:text-primary-500"
 		/>
 		<Tooltip arrow={false}>Bookmark</Tooltip>
@@ -115,3 +117,12 @@
 		<Tooltip arrow={false}>Mode</Tooltip>
 	</BottomNavItem>
 </BottomNav>
+
+<Modal title="Hint" bind:open={defaultModal} autoclose>
+	<p class="text-base leading-relaxed text-gray-500 dark:text-gray-100">
+		Jawaban salah memiliki nilai -1 dan jawaban benar memiliki nilai 4. Kerjakan dengan cermat dan teliti.
+	</p>
+	<svelte:fragment slot="footer">
+		<Button>OK</Button>
+	</svelte:fragment>
+</Modal>
